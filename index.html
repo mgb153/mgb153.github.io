@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sillage: the daily climb</title>
+<meta name="description" content="Seven cologne prompts a day. Rare answers launch you higher. How far up can you go?">
+<meta name="theme-color" content="#78BAF0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Italiana&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #F2CF72;
+  --gold-deep: #C99A2E;
+  --ink: #FFFFFF;
+  --ink-soft: rgba(255,255,255,0.74);
+  --glass: rgba(14, 26, 58, 0.62);
+  --glass-edge: rgba(255,255,255,0.2);
+  --miss: #FF9A8B;
+  --grass-far: #8CCB6E;
+  --grass-near: #5FAE4E;
+  --grass-deep: #3F8B3B;
+  --display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
+  --body: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ph: 240px;
+  box-sizing: border-box;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html, body { height: 100%; margin: 0; overflow: hidden; }
+body { font-family: var(--body); color: var(--ink); background: #78BAF0; -webkit-tap-highlight-color: transparent; }
+button, input { font-family: inherit; }
+
+/* ---------- Sky & scenery ---------- */
+#sky { position: fixed; inset: 0; background: linear-gradient(to bottom, var(--top, #78BAF0), var(--bottom, #FFD6AA)); }
+.layer { position: fixed; inset: 0; pointer-events: none; opacity: 0; will-change: transform, opacity; }
+
+.stars { background-repeat: repeat; }
+#stars1 {
+  background-image:
+    radial-gradient(1.6px 1.6px at 20px 30px, #fff 50%, transparent 52%),
+    radial-gradient(1px 1px at 140px 90px, #fff 50%, transparent 52%),
+    radial-gradient(1.3px 1.3px at 260px 40px, #fff 50%, transparent 52%),
+    radial-gradient(1px 1px at 80px 200px, #fff 50%, transparent 52%),
+    radial-gradient(1.8px 1.8px at 300px 250px, #fff 50%, transparent 52%),
+    radial-gradient(1px 1px at 200px 300px, #fff 50%, transparent 52%);
+  background-size: 340px 340px;
+}
+#stars2 {
+  background-image:
+    radial-gradient(1.2px 1.2px at 60px 120px, #fff 50%, transparent 52%),
+    radial-gradient(1.5px 1.5px at 180px 20px, #ffeebb 50%, transparent 52%),
+    radial-gradient(1px 1px at 240px 170px, #fff 50%, transparent 52%),
+    radial-gradient(1.4px 1.4px at 30px 260px, #cfe3ff 50%, transparent 52%);
+  background-size: 290px 290px;
+}
+.twinkle { animation: twinkle 3.2s ease-in-out infinite alternate; }
+.twinkle.slow { animation-duration: 5s; }
+@keyframes twinkle { from { filter: brightness(0.6); } to { filter: brightness(1.4); } }
+
+#moon .moon {
+  position: absolute; right: 12vw; top: 16vh; width: 90px; height: 90px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffbe8, #e8e2c8 60%, #cfc8aa);
+  box-shadow: 0 0 40px rgba(255,250,220,0.45);
+}
+#moon .moon::before, #moon .moon::after { content: ""; position: absolute; border-radius: 50%; background: rgba(170,160,130,0.35); }
+#moon .moon::before { width: 18px; height: 18px; left: 22px; top: 48px; }
+#moon .moon::after { width: 11px; height: 11px; left: 56px; top: 28px; }
+
+#earth .planet {
+  position: absolute; left: 50%; width: 320vmax; height: 320vmax; top: calc(100% - 20vh);
+  transform: translateX(-50%); border-radius: 50%;
+  background: radial-gradient(circle at 50% 4%, #5fb2ff 0%, #2a6fd0 6%, #164a9a 14%, #0b2b66 30%);
+  box-shadow: 0 0 60px 18px rgba(110,190,255,0.55), 0 0 180px 60px rgba(80,150,255,0.25);
+}
+
+.sat-wrap { position: absolute; top: 24vh; left: 0; animation: cross 46s linear infinite; }
+#plane .plane-wrap { position: absolute; top: 34vh; left: 0; animation: cross 22s linear infinite; }
+#plane .plane-wrap.two { top: 58vh; animation-duration: 30s; animation-delay: -14s; transform: scaleX(-1); }
+@keyframes cross { from { transform: translateX(-20vw); } to { transform: translateX(120vw); } }
+.contrail { position: absolute; right: 52px; top: 9px; width: 34vw; height: 3px; border-radius: 3px;
+  background: linear-gradient(to left, rgba(255,255,255,0.85), rgba(255,255,255,0)); }
+
+.balloon { position: absolute; animation: bob 5s ease-in-out infinite alternate; }
+@keyframes bob { from { transform: translateY(-8px) rotate(-2deg); } to { transform: translateY(10px) rotate(2deg); } }
+
+.cloud { position: absolute; animation: drift linear infinite alternate; }
+@keyframes drift { from { transform: translateX(-6vw); } to { transform: translateX(6vw); } }
+
+.bird { position: absolute; left: 0; animation: fly linear infinite; }
+.bird svg { display: block; animation: flap 0.42s ease-in-out infinite alternate; transform-origin: 50% 55%; }
+@keyframes flap { to { transform: scaleY(-0.35); } }
+@keyframes fly {
+  0% { transform: translate(-12vw, 0); }
+  25% { transform: translate(18vw, -18px); }
+  50% { transform: translate(48vw, 10px); }
+  75% { transform: translate(80vw, -12px); }
+  100% { transform: translate(115vw, 6px); }
+}
+.bird.rev { animation-name: flyrev; }
+@keyframes flyrev {
+  0% { transform: translate(115vw, 0) scaleX(-1); }
+  50% { transform: translate(50vw, -16px) scaleX(-1); }
+  100% { transform: translate(-12vw, 8px) scaleX(-1); }
+}
+
+/* Park */
+#park { position: fixed; left: 0; right: 0; bottom: 0; height: var(--gh, 46vh); pointer-events: none; will-change: transform; }
+#park .hills { position: absolute; inset: 0; width: 100%; height: 100%; }
+.park-item { position: absolute; transform-origin: 50% 100%; }
+.tree { animation: sway 4.5s ease-in-out infinite alternate; }
+.tree.b { animation-duration: 5.6s; animation-delay: -2s; }
+@keyframes sway { from { transform: rotate(-1.6deg); } to { transform: rotate(1.6deg); } }
+.fountain-drop { animation: spray 1.4s ease-out infinite; transform-origin: 50% 100%; }
+@keyframes spray { 0% { opacity: 0; transform: translateY(6px) scaleY(0.4); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(-4px) scaleY(1.1); } }
+
+/* The bottle */
+#craft { position: fixed; left: 50%; bottom: 42vh; transition: bottom 0.6s ease; width: 56px; height: 84px; transform: translateX(-50%); pointer-events: none; z-index: 5; }
+#craft .body { position: absolute; inset: 0; transition: transform 0.6s; }
+#craft.flying .body { animation: hover 2.2s ease-in-out infinite alternate; }
+@keyframes hover { from { transform: translateY(-6px) rotate(-2deg); } to { transform: translateY(4px) rotate(2deg); } }
+.mist { position: absolute; left: 50%; bottom: -6px; width: 0; height: 0; opacity: 0; transition: opacity 0.4s; }
+#craft.flying .mist { opacity: 1; }
+.puff { position: absolute; width: 20px; height: 20px; margin-left: -10px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,240,205,0.95), rgba(255,226,160,0) 70%);
+  animation: puff 1.4s ease-out infinite; }
+.puff:nth-child(2) { animation-delay: -0.45s; }
+.puff:nth-child(3) { animation-delay: -0.9s; }
+#craft.boost .puff { animation-duration: 0.55s; width: 30px; height: 30px; margin-left: -15px; }
+@keyframes puff { from { transform: translate(0, 0) scale(0.5); opacity: 1; } to { transform: translate(var(--dx, 6px), 70px) scale(2.4); opacity: 0; } }
+
+
+/* Spray-boost launch */
+#craft .tilt { position: absolute; inset: 0; transform-origin: 50% 55%; transition: transform 0.38s cubic-bezier(.3,1.5,.5,1); }
+#craft.tilted .tilt { transform: rotate(90deg); }
+#craft.upright .tilt { transition: transform 0.7s cubic-bezier(.4,1.6,.5,1); }
+#craft.spraying .tilt svg { animation: recoil 0.07s linear infinite alternate; }
+@keyframes recoil { from { transform: translateY(0); } to { transform: translateY(3px); } }
+.spray { position: absolute; left: 50%; top: 2px; width: 0; height: 0; opacity: 0; transition: opacity 0.15s; }
+#craft.spraying .spray { opacity: 1; }
+.spray::before { content: ""; position: absolute; left: -46px; top: -150px; width: 92px; height: 150px;
+  background: radial-gradient(ellipse at 50% 100%, rgba(255,248,225,0.95), rgba(255,236,190,0.45) 40%, rgba(255,236,190,0) 72%);
+  clip-path: polygon(46% 100%, 54% 100%, 100% 0, 0 0); animation: flicker 0.09s linear infinite alternate; }
+@keyframes flicker { from { opacity: 0.75; transform: scaleY(0.92); } to { opacity: 1; transform: scaleY(1.05); } }
+.drop { position: absolute; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%;
+  background: radial-gradient(circle, #fffbea 30%, rgba(255,226,160,0) 70%); animation: shoot 0.5s ease-out infinite; }
+@keyframes shoot { 0% { transform: translate(0,0) scale(0.5); opacity: 0; } 15% { opacity: 1; } 100% { transform: translate(var(--sx), var(--sy)) scale(var(--ss)); opacity: 0; } }
+
+
+/* Decorative bottles on the sides of the intro box */
+#panel { overflow: hidden; }
+#s-intro { position: relative; }
+.intro { position: relative; z-index: 2; }
+.deco { position: absolute; top: -16px; bottom: -16px; width: 150px; z-index: 1; pointer-events: none; }
+.deco.left { left: -18px; -webkit-mask-image: linear-gradient(to right, #000 55%, transparent); mask-image: linear-gradient(to right, #000 55%, transparent); }
+.deco.right { right: -18px; -webkit-mask-image: linear-gradient(to left, #000 55%, transparent); mask-image: linear-gradient(to left, #000 55%, transparent); }
+.deco svg { position: absolute; filter: drop-shadow(0 6px 10px rgba(0,0,0,0.3)); animation: deco-float 6s ease-in-out infinite alternate; }
+@keyframes deco-float { from { translate: 0 -3px; } to { translate: 0 4px; } }
+@media (max-width: 640px) {
+  .deco { width: 74px; opacity: 0.8; }
+  .deco.left { left: -26px; }
+  .deco.right { right: -26px; }
+  .deco svg { scale: 0.6; transform-origin: 0 0; }
+  #s-intro .intro-lede { max-width: 24ch; }
+  .deco.right svg { transform-origin: 100% 0; }
+  .intro h1 { font-size: 44px; }
+}
+
+/* Altimeter rail */
+#rail { position: fixed; left: 18px; top: 104px; bottom: min(calc(var(--ph) + 36px), 44vh); width: 2px; background: rgba(255,255,255,0.5); z-index: 6; pointer-events: none; }
+.mark { position: absolute; left: -4px; transform: translateY(50%); font-size: 11px; line-height: 1.15; color: var(--ink-soft); padding-left: 16px; white-space: nowrap; text-shadow: 0 1px 6px rgba(0,20,50,0.5); }
+.mark::before { content: ""; position: absolute; left: 0; top: 50%; width: 10px; height: 1px; background: rgba(255,255,255,0.75); }
+.mark b { display: block; color: #fff; font-weight: 600; }
+#rail-dot { position: absolute; left: -7px; width: 16px; height: 16px; border-radius: 50%; background: var(--gold); transform: translateY(50%); box-shadow: 0 0 0 4px rgba(242,207,114,0.3), 0 0 16px rgba(242,207,114,0.9); }
+
+/* HUD */
+#hud { position: fixed; top: 0; left: 0; right: 0; z-index: 7; display: grid; grid-template-columns: 1fr auto 1fr; align-items: start;
+  padding: calc(14px + env(safe-area-inset-top, 0px)) 20px 0; pointer-events: none; text-shadow: 0 1px 14px rgba(0,25,60,0.45); }
+.wordmark { font-family: var(--display); font-size: 30px; line-height: 1; }
+.wordmark span { display: block; font-family: var(--body); font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+.alt-readout { text-align: center; }
+.alt-num { font-family: var(--display); font-size: clamp(46px, 9vw, 72px); line-height: 0.95; font-variant-numeric: tabular-nums; }
+.alt-num small { font-family: var(--body); font-size: 15px; margin-left: 4px; color: var(--ink-soft); }
+.zone { font-size: 13px; color: var(--gold); margin-top: 4px; font-weight: 500; }
+
+/* Pop-up celebration */
+#pop { position: fixed; left: 50%; top: 24vh; transform: translateX(-50%); z-index: 8; text-align: center; pointer-events: none; }
+#pop .tier { font-family: var(--display); font-size: clamp(40px, 8vw, 64px); line-height: 1; text-shadow: 0 2px 24px rgba(0,20,60,0.5); white-space: nowrap; }
+#pop .gain { font-weight: 700; font-size: 22px; color: var(--gold); margin-top: 6px; text-shadow: 0 1px 10px rgba(0,0,0,0.4); }
+#pop.show { animation: popin 2.2s cubic-bezier(.2,.9,.3,1.2) forwards; }
+@keyframes popin {
+  0% { opacity: 0; transform: translate(-50%, 20px) scale(0.6); }
+  14% { opacity: 1; transform: translate(-50%, 0) scale(1.06); }
+  24% { transform: translate(-50%, 0) scale(1); }
+  75% { opacity: 1; transform: translate(-50%, -10px) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -40px) scale(0.98); }
+}
+.spark { position: absolute; left: 50%; top: 30px; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px var(--gold);
+  animation: spark 1.2s ease-out forwards; }
+@keyframes spark { from { transform: translate(0,0) scale(1); opacity: 1; } to { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }
+
+/* ---------- Panel ---------- */
+#panel {
+  position: fixed; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%);
+  width: min(540px, calc(100% - 20px)); z-index: 9;
+  background: var(--glass); border: 1px solid var(--glass-edge); border-radius: 22px;
+  padding: 16px 18px 16px; -webkit-backdrop-filter: blur(16px) saturate(1.2); backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 18px 50px rgba(5, 15, 45, 0.35);
+}
+#panel.shake { animation: shake 0.42s; }
+@keyframes shake { 20% { transform: translateX(calc(-50% - 8px)); } 40% { transform: translateX(calc(-50% + 7px)); } 60% { transform: translateX(calc(-50% - 5px)); } 80% { transform: translateX(calc(-50% + 3px)); } }
+
+h1 { font-family: var(--display); font-weight: 400; font-size: 44px; line-height: 1; margin: 0 0 6px; }
+.lede { font-size: 15px; line-height: 1.5; color: var(--ink-soft); margin: 0 0 14px; }
+.chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 0 0 16px; padding: 0; list-style: none; }
+.chips li { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 6px 9px; font-size: 13px; line-height: 1.25; display: flex; justify-content: space-between; gap: 6px; }
+.chips b { display: block; font-weight: 600; }
+.chips span { color: var(--gold); font-variant-numeric: tabular-nums; }
+
+.toprow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.pips { display: flex; gap: 5px; flex: 1; }
+.pip { flex: 1; height: 5px; border-radius: 3px; background: rgba(255,255,255,0.2); position: relative; overflow: hidden; }
+.pip.now { background: rgba(255,255,255,0.55); }
+.pip.done { background: var(--gold); }
+.pip.done.miss { background: rgba(255,154,139,0.75); }
+.secs { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 15px; width: 28px; text-align: right; }
+.secs.low { color: var(--miss); animation: beat 0.5s ease-in-out infinite alternate; }
+@keyframes beat { to { transform: scale(1.18); } }
+
+.prompt { font-family: var(--display); font-weight: 400; font-size: clamp(23px, 4.6vw, 30px); line-height: 1.15; margin: 0 0 12px; }
+.row { display: flex; gap: 8px; }
+input[type="text"] {
+  flex: 1; min-width: 0; font-size: 17px; font-weight: 500; color: var(--ink);
+  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.32); border-radius: 12px; padding: 12px 14px;
+}
+input[type="text"]::placeholder { color: rgba(255,255,255,0.5); }
+button { font-size: 15px; font-weight: 600; border: 0; border-radius: 12px; padding: 12px 18px; cursor: pointer;
+  background: linear-gradient(180deg, #F7DB8A, var(--gold)); color: #22203A; transition: transform 0.12s; }
+button:active { transform: scale(0.96); }
+button.ghost { background: transparent; color: var(--ink); border: 1px solid rgba(255,255,255,0.38); }
+:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.msg { font-size: 13.5px; min-height: 1.3em; margin: 8px 0 0; color: var(--ink-soft); }
+.msg.bad { color: var(--miss); }
+.timer { height: 4px; background: rgba(255,255,255,0.16); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.timer span { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--gold), #fff); border-radius: 2px; }
+.timer.low span { background: var(--miss); }
+
+.verdict { font-family: var(--display); font-size: 32px; line-height: 1.05; margin: 0; }
+.verdict.miss { color: var(--miss); }
+.detail { font-size: 14.5px; line-height: 1.5; color: var(--ink-soft); margin: 6px 0 12px; }
+.detail strong { color: #fff; font-weight: 600; }
+.peek { display: grid; gap: 4px; font-size: 13.5px; margin: 0 0 14px; padding: 0; list-style: none; }
+.peek li { color: var(--ink-soft); }
+.peek b { color: #fff; font-weight: 600; }
+
+.end-alt { font-family: var(--display); font-size: 52px; line-height: 1; margin: 0; }
+.end-alt small { font-family: var(--body); font-size: 15px; color: var(--ink-soft); margin-left: 4px; }
+.rank { color: var(--gold); font-weight: 600; margin: 4px 0 2px; }
+.stars { font-size: 30px; letter-spacing: 4px; color: var(--gold); margin: 0 0 4px; text-shadow: 0 0 14px rgba(242,207,114,0.6); }
+.stars .off { color: rgba(255,255,255,0.25); text-shadow: none; }
+.comment { font-size: 14.5px; line-height: 1.45; color: var(--ink-soft); margin: 0 0 10px; }
+.intro { text-align: center; padding: 4px 6px 2px; }
+.intro h1 { font-size: 52px; margin: 0 0 6px; }
+.intro-lede { font-size: 14px; line-height: 1.5; color: #fff; margin: 0 auto 16px; max-width: 34ch; }
+#s-intro .note { text-align: center; }
+.emojis { font-size: 24px; letter-spacing: 2px; margin: 0 0 10px; }
+.recap { list-style: none; padding: 0; margin: 0 0 14px; display: grid; gap: 7px; max-height: 26vh; overflow-y: auto; }
+.recap li { display: grid; grid-template-columns: 26px 1fr auto; gap: 8px; font-size: 14px; line-height: 1.3; }
+.recap .q { color: var(--ink-soft); font-size: 12px; }
+.recap .pts { color: var(--gold); font-weight: 600; font-variant-numeric: tabular-nums; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.note { font-size: 13px; color: var(--ink-soft); margin: 10px 0 0; min-height: 1.2em; }
+[hidden] { display: none !important; }
+
+@media (max-width: 640px) {
+  #hud { padding-left: 14px; padding-right: 14px; }
+  .wordmark { font-size: 22px; }
+  .mark { font-size: 0; padding: 0; }
+  .mark::before { width: 8px; left: -3px; }
+  #rail { left: 12px; }
+  .chips { grid-template-columns: repeat(2, 1fr); }
+  #panel { padding: 14px 14px; border-radius: 18px; }
+  h1 { font-size: 36px; }
+  #moon .moon { width: 60px; height: 60px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="sky"></div>
+<div class="layer stars twinkle" id="stars1"></div>
+<div class="layer stars twinkle slow" id="stars2"></div>
+<div class="layer" id="moon"><div class="moon"></div></div>
+<div class="layer" id="earth"><div class="planet"></div></div>
+<div class="layer" id="sat">
+  <div class="sat-wrap">
+    <svg width="90" height="40" viewBox="0 0 90 40"><rect x="0" y="12" width="30" height="16" fill="#2f5fa8" stroke="#9cc4ff"/><rect x="60" y="12" width="30" height="16" fill="#2f5fa8" stroke="#9cc4ff"/><rect x="30" y="18" width="30" height="4" fill="#d9dde6"/><rect x="38" y="10" width="14" height="20" rx="3" fill="#eef1f6"/><circle cx="45" cy="20" r="2.5" fill="#F2CF72"/></svg>
+  </div>
+</div>
+<div class="layer" id="balloon">
+  <div class="balloon" style="left:18vw; top:30vh;">
+    <svg width="60" height="110" viewBox="0 0 60 110"><ellipse cx="30" cy="28" rx="26" ry="28" fill="#f4f6fb"/><ellipse cx="22" cy="18" rx="7" ry="9" fill="#fff" opacity=".9"/><path d="M30 56 L30 92" stroke="#e8ecf4" stroke-width="1.5"/><rect x="23" y="92" width="14" height="12" rx="2" fill="#F2CF72"/></svg>
+  </div>
+  <div class="balloon" style="right:16vw; top:52vh; animation-delay:-2s;">
+    <svg width="40" height="76" viewBox="0 0 60 110"><ellipse cx="30" cy="28" rx="26" ry="28" fill="#f4f6fb"/><path d="M30 56 L30 92" stroke="#e8ecf4" stroke-width="1.5"/><rect x="23" y="92" width="14" height="12" rx="2" fill="#f0a37a"/></svg>
+  </div>
+</div>
+<div class="layer" id="plane">
+  <div class="plane-wrap"><div class="contrail"></div>
+    <svg width="64" height="22" viewBox="0 0 64 22"><path d="M2 11 Q2 8 8 8 L50 8 Q62 9 62 11 Q62 13 50 14 L8 14 Q2 14 2 11z" fill="#fbfcff"/><path d="M26 8 L36 0 L41 0 L36 8z M26 14 L36 22 L41 22 L36 14z M6 8 L4 2 L9 2 L13 8z" fill="#dfe6f2"/><circle cx="54" cy="11" r="1.4" fill="#5a7bb5"/></svg>
+  </div>
+  <div class="plane-wrap two"><div class="contrail"></div>
+    <svg width="48" height="16" viewBox="0 0 64 22"><path d="M2 11 Q2 8 8 8 L50 8 Q62 9 62 11 Q62 13 50 14 L8 14 Q2 14 2 11z" fill="#fbfcff"/><path d="M26 8 L36 0 L41 0 L36 8z M26 14 L36 22 L41 22 L36 14z M6 8 L4 2 L9 2 L13 8z" fill="#dfe6f2"/></svg>
+  </div>
+</div>
+<div class="layer" id="clouds"></div>
+<div class="layer" id="birds"></div>
+
+<div id="park" aria-hidden="true">
+  <svg class="hills" viewBox="0 0 1000 460" preserveAspectRatio="none">
+    <path d="M0 40 Q180 -10 380 22 T760 14 T1000 30 L1000 460 L0 460z" fill="var(--grass-far)"/>
+    <path d="M0 80 Q220 30 470 52 T1000 62 L1000 460 L0 460z" fill="var(--grass-near)"/>
+    <path d="M430 460 Q470 300 520 200 Q545 140 505 70 L530 64 Q590 150 560 220 Q520 320 560 460z" fill="#E9D7AE" opacity=".9"/>
+    <ellipse cx="800" cy="160" rx="110" ry="26" fill="#6FB7E0"/>
+    <ellipse cx="785" cy="154" rx="60" ry="9" fill="#A6D8F2" opacity=".8"/>
+    <path d="M0 240 Q300 200 520 236 T1000 230 L1000 460 L0 460z" fill="var(--grass-deep)" opacity=".55"/>
+    <g fill="#fff6c9"><circle cx="120" cy="140" r="3"/><circle cx="160" cy="170" r="3"/><circle cx="660" cy="250" r="3"/><circle cx="900" cy="290" r="3"/><circle cx="300" cy="300" r="3"/></g>
+    <g fill="#ff9fb3"><circle cx="140" cy="155" r="3"/><circle cx="700" cy="270" r="3"/><circle cx="330" cy="280" r="3"/><circle cx="940" cy="250" r="3"/></g>
+  </svg>
+  <div id="park-items"></div>
+</div>
+
+<div id="craft" aria-hidden="true">
+  <div class="body">
+    <div class="mist"><div class="puff" style="--dx:-8px"></div><div class="puff" style="--dx:10px"></div><div class="puff" style="--dx:0px"></div></div>
+    <div class="tilt"><div class="spray" id="spray"></div>
+    <svg viewBox="0 0 56 84" width="56" height="84">
+      <defs>
+        <linearGradient id="glass" x1="0" x2="1"><stop offset="0" stop-color="#e6f3ff" stop-opacity=".9"/><stop offset=".5" stop-color="#bfe0ff" stop-opacity=".6"/><stop offset="1" stop-color="#e6f3ff" stop-opacity=".9"/></linearGradient>
+        <linearGradient id="juice" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD98A"/><stop offset="1" stop-color="#E7A43C"/></linearGradient>
+        <linearGradient id="cap" x1="0" x2="1"><stop offset="0" stop-color="#C99A2E"/><stop offset=".45" stop-color="#FCE7A4"/><stop offset="1" stop-color="#B9882A"/></linearGradient>
+      </defs>
+      <rect x="18" y="1" width="20" height="14" rx="3" fill="url(#cap)"/>
+      <rect x="23" y="14" width="10" height="6" fill="#d8c08a"/>
+      <rect x="5" y="19" width="46" height="62" rx="11" fill="url(#glass)" stroke="#fff" stroke-width="1.5"/>
+      <rect x="9" y="40" width="38" height="37" rx="8" fill="url(#juice)"/>
+      <rect x="15" y="48" width="26" height="14" rx="2" fill="#fffaf0" opacity=".92"/>
+      <text x="28" y="58" text-anchor="middle" font-family="Italiana, serif" font-size="9" fill="#5a4a2a">S</text>
+      <rect x="11" y="24" width="5" height="44" rx="2.5" fill="#fff" opacity=".55"/>
+    </svg></div>
+  </div>
+</div>
+
+<div id="rail" aria-hidden="true"><div id="rail-dot"></div></div>
+
+<header id="hud">
+  <div class="wordmark">Sillage<span id="daylabel"></span></div>
+  <div class="alt-readout" aria-live="off"><div class="alt-num"><span id="alt">0</span><small>km</small></div><div class="zone" id="zone">In the park</div></div>
+  <div></div>
+</header>
+
+<div id="pop" aria-hidden="true"></div>
+
+<section id="panel" aria-live="polite">
+  <div id="s-intro">
+    <div class="deco left" id="deco-left" aria-hidden="true"></div>
+    <div class="deco right" id="deco-right" aria-hidden="true"></div>
+    <div class="intro">
+      <h1>Sillage</h1>
+      <p class="intro-lede">Name a men's cologne for each prompt. The rarer your answer, the higher you fly.</p>
+      <button id="b-daily">Start today's climb</button>
+    </div>
+    <p class="note" id="intro-note"></p>
+  </div>
+
+  <div id="s-play" hidden>
+    <div class="toprow"><div class="pips" id="pips"></div><div class="secs" id="secs">20</div></div>
+    <h2 class="prompt" id="prompt"></h2>
+    <div id="ask">
+      <form class="row" id="form" autocomplete="off">
+        <input type="text" id="answer" placeholder="Type a cologne" aria-label="Your answer" spellcheck="false" autocapitalize="off" autocorrect="off">
+        <button type="submit">Submit</button>
+        <button type="button" class="ghost" id="b-pass">Pass</button>
+      </form>
+      <p class="msg" id="msg"></p>
+      <div class="timer" id="timer"><span id="bar"></span></div>
+    </div>
+    <div id="reveal" hidden>
+      <p class="verdict" id="verdict"></p>
+      <p class="detail" id="detail"></p>
+      <button id="b-next">Next prompt</button>
+    </div>
+  </div>
+
+  <div id="s-end" hidden>
+    <p class="stars" id="stars" aria-label=""></p>
+    <p class="end-alt"><span id="end-km">0</span><small>km</small></p>
+    <p class="rank" id="rank"></p>
+    <p class="comment" id="comment"></p>
+    <p class="emojis" id="emojis"></p>
+    <ul class="recap" id="recap"></ul>
+    <div class="actions">
+      <button id="b-share">Copy results</button>
+    </div>
+    <p class="note" id="end-note"></p>
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   TIERS
+   ========================================================= */
+const TIERS = {
+  t6:   { name: "Supernova",    pts: 100, icon: "🌟", line: "The single rarest answer. Incredible." },
+  t5:   { name: "Orbit",        pts: 80,  icon: "🛰️", line: "A deep cut. Collectors salute you." },
+  t4:   { name: "Stratosphere", pts: 60,  icon: "🎈", line: "Respected, and rarely the first pick." },
+  t3:   { name: "Jet Stream",   pts: 40,  icon: "✈️", line: "Solid, but plenty of noses got there." },
+  t2:   { name: "Cumulus",      pts: 25,  icon: "☁️", line: "A crowd favorite." },
+  t1:   { name: "Park Bench",   pts: 10,  icon: "🪑", line: "The answer everyone gives." },
+  miss: { name: "Grounded",     pts: 0,   icon: "🍃", line: "The clock ran out." }
+};
+const ORDER = ["t6","t5","t4","t3","t2","t1"];
+const SECONDS = 20;
+const MAX_KM = 700;
+
+/* =========================================================
+   ANSWERS
+   Format: "Name/BRAND|alias|alias; Next Name/BRAND"
+   Partial names, brand prefixes, accents, typos and
+   concentrations (EDP, Parfum...) are handled automatically,
+   so "Irish Tweed" or "Creed Irish Tweed" both count.
+   ========================================================= */
+const B = {
+  YSL: "Yves Saint Laurent", JPG: "Jean Paul Gaultier", DG: "Dolce & Gabbana", MFK: "Maison Francis Kurkdjian",
+  PDM: "Parfums de Marly", LV: "Louis Vuitton", VR: "Viktor & Rolf", CH: "Carolina Herrera", CK: "Calvin Klein",
+  RL: "Ralph Lauren", ADP: "Acqua di Parma", FM: "Frederic Malle", TF: "Tom Ford", MM: "Maison Margiela"
+};
+
+const PROMPTS = [
+{ id: "designer", q: "Name a men's fragrance from a designer fashion house.", t: {
+  t1: "Sauvage/Dior; Bleu de Chanel/Chanel|bleu",
+  t2: "Acqua di Giò/Armani|adg|aqua di gio; Eros/Versace; Y/YSL; Le Male/JPG; 1 Million/Rabanne|one million|1m; Dylan Blue/Versace; Stronger With You/Armani|swy; Invictus/Rabanne",
+  t3: "Light Blue pour Homme/DG|light blue; La Nuit de L'Homme/YSL|la nuit; L'Homme/YSL; Dior Homme/Dior; Allure Homme Sport/Chanel|allure sport; Luna Rossa Carbon/Prada; Spicebomb/VR; Polo Blue/RL; Gentleman/Givenchy; Valentino Uomo Born in Roma/Valentino|born in roma; Bad Boy/CH; Legend/Montblanc|montblanc legend; Explorer/Montblanc|montblanc explorer; Terre d'Hermès/Hermès|terre; The One for Men/DG|the one; Boss Bottled/Hugo Boss|bottled; Ultra Male/JPG; Le Beau/JPG; Phantom/Rabanne; Prada L'Homme/Prada",
+  t4: "Fahrenheit/Dior; Égoïste/Chanel|egoist; Allure Homme/Chanel|allure; Armani Code/Armani|code; Gucci Guilty pour Homme/Gucci|guilty; Luna Rossa Black/Prada; Polo Red/RL; Hero/Burberry|burberry hero; Man in Black/Bvlgari; Bvlgari Aqva pour Homme/Bvlgari|aqva|aqua; Eternity for Men/CK|eternity; CK One/CK; Obsession for Men/CK|obsession; Cool Water/Davidoff; Chrome/Azzaro; Wanted/Azzaro; A*Men/Mugler|amen|angel men; L'Eau d'Issey pour Homme/Issey Miyake|l eau d issey; L'Homme Idéal/Guerlain; H24/Hermès; Versace Pour Homme/Versace; MYSLF/YSL|myself; Kouros/YSL; Pure XS/Rabanne; Scandal pour Homme/JPG|scandal; Valentino Uomo/Valentino; 212 VIP Men/CH|212|212 vip",
+  t5: "Antaeus/Chanel; Pour Monsieur/Chanel; Eau Sauvage/Dior; Dune pour Homme/Dior|dune; Habit Rouge/Guerlain; Vetiver/Guerlain; Héritage/Guerlain; Pi/Givenchy|π; Déclaration/Cartier; Pasha/Cartier; Encre Noire/Lalique; Bel Ami/Hermès; Équipage/Hermès; Gucci pour Homme/Gucci; Envy for Men/Gucci|envy; Rush for Men/Gucci; Jazz/YSL; M7/YSL; Blue Jeans/Versace; The Dreamer/Versace|dreamer; Burberry Brit for Men/Burberry|brit; Mr. Burberry/Burberry|mr burberry; Kenzo pour Homme/Kenzo; Joop! Homme/Joop|joop; Drakkar Noir/Guy Laroche|drakkar; Polo/RL|polo green; Ultraviolet Man/Rabanne|ultraviolet; Armani Mania/Armani|mania; Acqua di Giò Essenza/Armani|essenza",
+  t6: "Higher/Dior|dior higher"
+}},
+{ id: "niche", q: "Name a fragrance from a niche perfume house.", t: {
+  t1: "Aventus/Creed",
+  t2: "Oud Wood/TF; Tobacco Vanille/TF|tobacco vanilla; Baccarat Rouge 540/MFK|br540|baccarat rouge; Layton/PDM; Santal 33/Le Labo; Green Irish Tweed/Creed|git",
+  t3: "Silver Mountain Water/Creed|smw; Ombré Leather/TF; Pegasus/PDM; Herod/PDM; Gypsy Water/Byredo; Angels' Share/Kilian|angels share; Oud for Greatness/Initio; Grand Soir/MFK; Jazz Club/MM|replica jazz club; By the Fireplace/MM|replica by the fireplace; Another 13/Le Labo; Naxos/Xerjoff; Lost Cherry/TF; Tuscan Leather/TF; Neroli Portofino/TF",
+  t4: "Viking/Creed; Absolu Aventus/Creed|aventus absolu; Himalaya/Creed; Millésime Impérial/Creed; Royal Oud/Creed; Greenley/PDM; Althaïr/PDM; Percival/PDM; Hacivat/Nishane; Ani/Nishane; Side Effect/Initio; Erba Pura/Xerjoff; Mojave Ghost/Byredo; Bal d'Afrique/Byredo; Interlude Man/Amouage|interlude; Reflection Man/Amouage|reflection; Wood Sage & Sea Salt/Jo Malone|wood sage and sea salt; Philosykos/Diptyque; Tam Dao/Diptyque; Oud Satin Mood/MFK; Aqua Universalis/MFK; Bergamote 22/Le Labo; Thé Noir 29/Le Labo; Molecule 01/Escentric Molecules",
+  t5: "Bois du Portugal/Creed; Original Vetiver/Creed; Virgin Island Water/Creed|viw; Royal Water/Creed; Italian Cypress/TF; Tobacco Oud/TF; Costa Azzurra/TF; Black Afgano/Nasomatto; Portrait of a Lady/FM; Musc Ravageur/FM; Vetiver Extraordinaire/FM; Géranium pour Monsieur/FM; Sycomore/Chanel; Bois d'Argent/Dior; Alexandria II/Xerjoff|alexandria; 40 Knots/Xerjoff|forty knots; Torino21/Xerjoff|torino 21; Jubilation XXV/Amouage|jubilation 25|jubilation; Memoir Man/Amouage|memoir; Hundred Silent Ways/Nishane; Fougère Royale/Houbigant; Halfeti/Penhaligon's; Endymion/Penhaligon's; Terroni/Orto Parisi; Megamare/Orto Parisi; Ombre Nomade/LV; L'Immensité/LV; Sur la Route/LV",
+  t6: "Tabarome/Creed"
+}},
+{ id: "classic", q: "Name a men's fragrance first released before the year 2000.", t: {
+  t1: "Cool Water/Davidoff; Acqua di Giò/Armani|adg|aqua di gio",
+  t2: "Le Male/JPG; Polo/RL|polo green; CK One/CK; Eternity for Men/CK|eternity; Fahrenheit/Dior; Drakkar Noir/Guy Laroche|drakkar; Green Irish Tweed/Creed|git; Old Spice/Old Spice; Brut/Fabergé",
+  t3: "Égoïste/Chanel|egoist; Kouros/YSL; Obsession for Men/CK|obsession; Eau Sauvage/Dior; Aramis/Aramis; Polo Sport/RL; Hugo/Hugo Boss|hugo man; Boss Bottled/Hugo Boss|bottled; Allure Homme/Chanel|allure; Escape for Men/CK|escape; Silver Mountain Water/Creed|smw; Platinum Égoïste/Chanel; Tommy/Tommy Hilfiger; Paco Rabanne pour Homme/Rabanne; Azzaro pour Homme/Azzaro; Chrome/Azzaro; L'Eau d'Issey pour Homme/Issey Miyake|l eau d issey; Jazz/YSL",
+  t4: "Antaeus/Chanel; Pour Monsieur/Chanel; Habit Rouge/Guerlain; Vetiver/Guerlain; Dune pour Homme/Dior|dune; Jules/Dior; Opium pour Homme/YSL; XS/Rabanne; Blue Jeans/Versace; The Dreamer/Versace|dreamer; Versace L'Homme/Versace; Ultraviolet Man/Rabanne|ultraviolet; Zino/Davidoff; Joop! Homme/Joop|joop; Safari for Men/RL|safari; Cerruti 1881/Cerruti|1881; Kenzo pour Homme/Kenzo; Dolce & Gabbana pour Homme/DG; Bvlgari pour Homme/Bvlgari; Bvlgari Black/Bvlgari; Pi/Givenchy|π; Envy for Men/Gucci|envy; Rush for Men/Gucci; Millésime Impérial/Creed; Bois du Portugal/Creed; Armani Eau pour Homme/Armani; Tsar/Van Cleef & Arpels; Burberry for Men/Burberry; Nautica Classic/Nautica",
+  t5: "Eau d'Orange Verte/Hermès; Équipage/Hermès; Bel Ami/Hermès; Z-14/Halston|z14; Quorum/Antonio Puig; Grey Flannel/Geoffrey Beene; Lagerfeld Classic/Karl Lagerfeld|lagerfeld; Pino Silvestre/Pino Silvestre; Colonia/ADP; Fougère Royale/Houbigant; Eau de Rochas Homme/Rochas; Curve for Men/Liz Claiborne|curve; Body Kouros/YSL; Tuscany per Uomo/Aramis|tuscany; Monsieur de Givenchy/Givenchy; Insensé/Givenchy; Héritage/Guerlain; Pour Homme/YSL; Pour un Homme/Caron; Canoe/Dana; English Leather/Dana",
+  t6: "Jicky/Guerlain"
+}},
+{ id: "modern", q: "Name a men's fragrance first released in 2010 or later.", t: {
+  t1: "Sauvage/Dior; Bleu de Chanel/Chanel|bleu",
+  t2: "Aventus/Creed; Eros/Versace; Dylan Blue/Versace; Y/YSL; Invictus/Rabanne; Stronger With You/Armani|swy; Spicebomb/VR",
+  t3: "Layton/PDM; Luna Rossa Carbon/Prada; Bad Boy/CH; Valentino Uomo Born in Roma/Valentino|born in roma; Ombré Leather/TF; Baccarat Rouge 540/MFK|br540|baccarat rouge; Sauvage Elixir/Dior; Le Male Elixir/JPG; Phantom/Rabanne; Le Beau/JPG; Ultra Male/JPG; Acqua di Giò Profumo/Armani|adg profumo; Noir Extreme/TF; Explorer/Montblanc; Legend/Montblanc|montblanc legend; Santal 33/Le Labo",
+  t4: "Prada L'Homme/Prada; Luna Rossa Black/Prada; Gucci Guilty pour Homme/Gucci|guilty; Hero/Burberry; MYSLF/YSL|myself; L'Homme Idéal/Guerlain; Gentleman Réserve Privée/Givenchy|reserve privee; Valentino Uomo/Valentino; Pegasus/PDM; Herod/PDM; Greenley/PDM; Althaïr/PDM; Percival/PDM; Viking/Creed; Absolu Aventus/Creed|aventus absolu; Aventus Cologne/Creed; Wanted/Azzaro; Eros Flame/Versace; Acqua di Giò Profondo/Armani|profondo; Code Profumo/Armani; Jazz Club/MM; By the Fireplace/MM; Lost Cherry/TF; Angels' Share/Kilian|angels share; Side Effect/Initio; Oud for Greatness/Initio; Khamrah/Lattafa; Club de Nuit Intense Man/Armaf|club de nuit|cdnim; Hawas/Rasasi; Grand Soir/MFK",
+  t5: "Costa Azzurra/TF; Bitter Peach/TF; Beau de Jour/TF; Ébène Fumé/TF; Mojave Ghost/Byredo; Naxos/Xerjoff; Erba Pura/Xerjoff; Hacivat/Nishane; Ani/Nishane; Another 13/Le Labo; H24/Hermès; Boss Bottled Tonic/Hugo Boss|bottled tonic; Spicebomb Extreme/VR; Allure Homme Sport Eau Extreme/Chanel|eau extreme; Invictus Victory/Rabanne; 1 Million Lucky/Rabanne; Legend Spirit/Montblanc; L'Immensité/LV; Ombre Nomade/LV; Sur la Route/LV",
+  t6: "Toy Boy/Moschino"
+}},
+{ id: "homme", q: "Name a men's fragrance with Homme, Man, Men, Male, or Uomo in its name.", t: {
+  t1: "Dior Homme/Dior; Le Male/JPG",
+  t2: "Allure Homme Sport/Chanel|allure sport; La Nuit de L'Homme/YSL|la nuit; Light Blue pour Homme/DG|light blue; Versace Pour Homme/Versace; The One for Men/DG|the one; Valentino Uomo/Valentino",
+  t3: "Dior Homme Intense/Dior; Dior Homme Sport/Dior; Allure Homme/Chanel|allure; L'Homme/YSL; Prada L'Homme/Prada; Gucci Guilty pour Homme/Gucci|guilty; Ultra Male/JPG; Le Male Elixir/JPG; 212 VIP Men/CH|212|212 vip; Eternity for Men/CK|eternity; Obsession for Men/CK|obsession; Man in Black/Bvlgari; Paco Rabanne pour Homme/Rabanne; L'Homme Idéal/Guerlain; Valentino Uomo Born in Roma/Valentino|born in roma; Versace Man Eau Fraîche/Versace|eau fraiche; Club de Nuit Intense Man/Armaf|club de nuit",
+  t4: "Azzaro pour Homme/Azzaro; Dolce & Gabbana pour Homme/DG; L'Eau d'Issey pour Homme/Issey Miyake|l eau d issey; Kenzo pour Homme/Kenzo; Armani Eau pour Homme/Armani; Bvlgari pour Homme/Bvlgari; Bvlgari Aqva pour Homme/Bvlgari|aqva|aqua; Bvlgari Man Wood Essence/Bvlgari|wood essence; Opium pour Homme/YSL; Rive Gauche pour Homme/YSL|rive gauche; Scandal pour Homme/JPG|scandal; Gucci pour Homme/Gucci; Joop! Homme/Joop|joop; Escape for Men/CK|escape; Burberry Brit for Men/Burberry|brit; Ultraviolet Man/Rabanne|ultraviolet; Allure Homme Édition Blanche/Chanel|edition blanche; Interlude Man/Amouage|interlude; Reflection Man/Amouage|reflection; Tom Ford for Men/TF; Envy for Men/Gucci|envy; Rush for Men/Gucci; Safari for Men/RL|safari; Burberry for Men/Burberry; Diamonds for Men/Armani",
+  t5: "Pour Homme/YSL; Dune pour Homme/Dior|dune; Fleur du Mâle/JPG; A*Men/Mugler|amen|angel men; Uomo Salvatore Ferragamo/Ferragamo|ferragamo uomo; Bentley for Men/Bentley; Jimmy Choo Man/Jimmy Choo; Prada Amber pour Homme/Prada|amber pour homme; Memoir Man/Amouage|memoir; Tuscany per Uomo/Aramis|tuscany; Curve for Men/Liz Claiborne|curve; Givenchy pour Homme/Givenchy; Rochas Man/Rochas; Eau de Rochas Homme/Rochas; Coach for Men/Coach; Michael Kors for Men/Michael Kors",
+  t6: "Pour un Homme/Caron"
+}},
+{ id: "french", q: "Name a men's fragrance with a French word in its name.", t: {
+  t1: "Sauvage/Dior; Bleu de Chanel/Chanel|bleu",
+  t2: "Le Male/JPG; Dior Homme/Dior; La Nuit de L'Homme/YSL|la nuit; Allure Homme Sport/Chanel|allure sport; Terre d'Hermès/Hermès|terre; Le Beau/JPG",
+  t3: "Eau Sauvage/Dior; Égoïste/Chanel|egoist; L'Homme/YSL; Prada L'Homme/Prada; Ombré Leather/TF; Noir Extreme/TF; Baccarat Rouge 540/MFK|br540|baccarat rouge; Grand Soir/MFK; Gentleman Réserve Privée/Givenchy|reserve privee; Light Blue pour Homme/DG|light blue; Versace Pour Homme/Versace; L'Homme Idéal/Guerlain; Allure Homme/Chanel|allure; Bois d'Argent/Dior; Sauvage Elixir/Dior",
+  t4: "Pour Monsieur/Chanel; Habit Rouge/Guerlain; Vetiver/Guerlain; Héritage/Guerlain; Équipage/Hermès; Bel Ami/Hermès; Voyage d'Hermès/Hermès|voyage; Eau d'Orange Verte/Hermès|orange verte; Un Jardin sur le Nil/Hermès|jardin sur le nil; Rive Gauche pour Homme/YSL|rive gauche; Opium pour Homme/YSL; Encre Noire/Lalique; Gris Dior/Dior; Fleur du Mâle/JPG; Bois du Portugal/Creed; Millésime Impérial/Creed; Neroli Sauvage/Creed; Beau de Jour/TF; Ébène Fumé/TF; Musc Ravageur/FM; Vetiver Extraordinaire/FM; Géranium pour Monsieur/FM; Ombre Nomade/LV; L'Immensité/LV; Sur la Route/LV; Nouveau Monde/LV; Bal d'Afrique/Byredo; Azzaro pour Homme/Azzaro; Paco Rabanne pour Homme/Rabanne; Déclaration/Cartier",
+  t5: "Pour un Homme/Caron; Eau de Rochas Homme/Rochas; Platinum Égoïste/Chanel; Allure Homme Édition Blanche/Chanel|edition blanche; Terre d'Hermès Eau Givrée/Hermès|eau givree; Un Jardin en Méditerranée/Hermès|jardin en mediterranee; L'Eau d'Issey pour Homme/Issey Miyake|l eau d issey; L'Eau Bleue d'Issey pour Homme/Issey Miyake|l eau bleue; Dune pour Homme/Dior|dune; Kenzo pour Homme/Kenzo; Joop! Homme/Joop|joop; Dans Tes Bras/FM; French Lover/FM; Pour Homme/YSL; Insensé/Givenchy; Monsieur de Givenchy/Givenchy",
+  t6: "Fougère Royale/Houbigant"
+}},
+{ id: "fresh", q: "Name a fresh, aquatic, or citrusy men's fragrance.", t: {
+  t1: "Acqua di Giò/Armani|adg|aqua di gio; Cool Water/Davidoff",
+  t2: "Dylan Blue/Versace; Light Blue pour Homme/DG|light blue; Allure Homme Sport/Chanel|allure sport; Bleu de Chanel/Chanel|bleu; Sauvage/Dior; Versace Pour Homme/Versace; Polo Blue/RL; L'Eau d'Issey pour Homme/Issey Miyake|l eau d issey",
+  t3: "Acqua di Giò Profondo/Armani|profondo; Acqua di Giò Profumo/Armani|profumo; Bvlgari Aqva pour Homme/Bvlgari|aqva|aqua; Neroli Portofino/TF; Silver Mountain Water/Creed|smw; Virgin Island Water/Creed|viw; Green Irish Tweed/Creed|git; Wood Sage & Sea Salt/Jo Malone|wood sage and sea salt; Luna Rossa Ocean/Prada; Nautica Voyage/Nautica|voyage; Invictus/Rabanne; CK One/CK; Eau Sauvage/Dior; Dior Homme Cologne/Dior; Terre d'Hermès/Hermès|terre; Versace Man Eau Fraîche/Versace|eau fraiche",
+  t4: "Colonia/ADP; Blu Mediterraneo/ADP; Fico di Amalfi/ADP; Mandarino di Amalfi/TF; Costa Azzurra/TF; Eau d'Orange Verte/Hermès|orange verte; Un Jardin sur le Nil/Hermès|jardin sur le nil; H24/Hermès; Gypsy Water/Byredo; Aqua Universalis/MFK; Megamare/Orto Parisi; Allure Homme Sport Eau Extreme/Chanel|eau extreme; Invictus Aqua/Rabanne; Aqva Marine/Bvlgari; Royal Water/Creed; Escape for Men/CK|escape; Polo Sport/RL; Boss Bottled Tonic/Hugo Boss|bottled tonic; Kenzo pour Homme/Kenzo; L'Eau Bleue d'Issey pour Homme/Issey Miyake|l eau bleue; Hawas/Rasasi; Luna Rossa/Prada; Explorer Ultra Blue/Montblanc|ultra blue; Legend Spirit/Montblanc; 4711/4711|4711 eau de cologne; Chrome/Azzaro; L.12.12 Blanc/Lacoste|l1212 blanc",
+  t5: "Arancia di Capri/ADP; Bergamotto di Calabria/ADP; Cipresso di Toscana/ADP; Neroli Sauvage/Creed; Acqua di Giò Essenza/Armani|essenza; Eau de Rochas Homme/Rochas; Terre d'Hermès Eau Givrée/Hermès|eau givree; Un Jardin en Méditerranée/Hermès|jardin en mediterranee; Philosykos/Diptyque; Bergamote 22/Le Labo; Curve for Men/Liz Claiborne|curve; Nautica Classic/Nautica; Aqva Amara/Bvlgari; Bvlgari pour Homme/Bvlgari; Royal Mayfair/Creed; Pino Silvestre/Pino Silvestre",
+  t6: "Mirto di Panarea/ADP"
+}},
+{ id: "warm", q: "Name a sweet, spicy, or warm men's fragrance for cold weather.", t: {
+  t1: "1 Million/Rabanne|one million|1m; Spicebomb/VR",
+  t2: "Eros/Versace; Le Male/JPG; Tobacco Vanille/TF|tobacco vanilla; Stronger With You/Armani|swy; La Nuit de L'Homme/YSL|la nuit; Ultra Male/JPG; Le Male Elixir/JPG",
+  t3: "Valentino Uomo Born in Roma/Valentino|born in roma; Bad Boy/CH; Layton/PDM; Herod/PDM; Pegasus/PDM; Oud Wood/TF; Angels' Share/Kilian|angels share; Khamrah/Lattafa; Baccarat Rouge 540/MFK|br540|baccarat rouge; Dior Homme Intense/Dior; A*Men/Mugler|amen|angel men; Pure XS/Rabanne; Spicebomb Extreme/VR; Sauvage Elixir/Dior; Eros Flame/Versace; Stronger With You Intensely/Armani|swy intensely; Gentleman Réserve Privée/Givenchy|reserve privee; Wanted by Night/Azzaro; Lost Cherry/TF",
+  t4: "Tobacco Oud/TF; Noir Extreme/TF; Black Orchid/TF; Tuscan Leather/TF; Ombré Leather/TF; Althaïr/PDM; Side Effect/Initio; Oud for Greatness/Initio; Grand Soir/MFK; By the Fireplace/MM; Jazz Club/MM; Kouros/YSL; Body Kouros/YSL; Opium pour Homme/YSL; Habit Rouge/Guerlain; Fahrenheit/Dior; Égoïste/Chanel|egoist; Gucci Guilty Absolute/Gucci; Man in Black/Bvlgari; Luna Rossa Black/Prada; Prada Amber pour Homme/Prada|amber pour homme; Interlude Man/Amouage|interlude; Ani/Nishane; Erba Pura/Xerjoff; Naxos/Xerjoff; Black Afgano/Nasomatto; Musc Ravageur/FM; Armani Code/Armani|code; Code Profumo/Armani; Scandal pour Homme/JPG|scandal; Toy Boy/Moschino; Kokorico/JPG",
+  t5: "Jubilation XXV/Amouage|jubilation 25|jubilation; Ébène Fumé/TF; Fève Délicieuse/Dior; Ambre Nuit/Dior; Tobacolor/Dior; Halfeti/Penhaligon's; Tam Dao/Diptyque; Zino/Davidoff; Antaeus/Chanel; Obsession for Men/CK|obsession; Gucci pour Homme/Gucci; Héritage/Guerlain; Bois d'Argent/Dior; Bvlgari Black/Bvlgari; Coromandel/Chanel; Fleur du Mâle/JPG; Rush for Men/Gucci",
+  t6: "Spiritueuse Double Vanille/Guerlain|double vanille"
+}},
+{ id: "italian", q: "Name a men's fragrance from an Italian fashion or perfume house.", t: {
+  t1: "Acqua di Giò/Armani|adg|aqua di gio; Eros/Versace",
+  t2: "Dylan Blue/Versace; Stronger With You/Armani|swy; Light Blue pour Homme/DG|light blue; Luna Rossa Carbon/Prada; Valentino Uomo Born in Roma/Valentino|born in roma; Versace Pour Homme/Versace",
+  t3: "Acqua di Giò Profumo/Armani|adg profumo; Acqua di Giò Profondo/Armani|profondo; Armani Code/Armani|code; Prada L'Homme/Prada; Gucci Guilty pour Homme/Gucci|guilty; The One for Men/DG|the one; Man in Black/Bvlgari; Bvlgari Aqva pour Homme/Bvlgari|aqva|aqua; Valentino Uomo/Valentino; Eros Flame/Versace; Stronger With You Intensely/Armani|swy intensely; Luna Rossa Black/Prada; Colonia/ADP; Naxos/Xerjoff",
+  t4: "Code Profumo/Armani; Acqua di Giò Absolu/Armani; Versace Man Eau Fraîche/Versace|eau fraiche; The Dreamer/Versace|dreamer; Versace L'Homme/Versace; Luna Rossa Ocean/Prada; Luna Rossa/Prada; Gucci Guilty Absolute/Gucci; Gucci pour Homme/Gucci; Envy for Men/Gucci|envy; Rush for Men/Gucci; Dolce & Gabbana pour Homme/DG; K by Dolce & Gabbana/DG; Bvlgari pour Homme/Bvlgari; Bvlgari Black/Bvlgari; Bvlgari Man Wood Essence/Bvlgari|wood essence; Blu Mediterraneo/ADP; Fico di Amalfi/ADP; Erba Pura/Xerjoff; Alexandria II/Xerjoff|alexandria; 40 Knots/Xerjoff|forty knots; Toy Boy/Moschino; Uomo Salvatore Ferragamo/Ferragamo|ferragamo uomo; Megamare/Orto Parisi; Terroni/Orto Parisi; Attitude/Armani; Armani Eau pour Homme/Armani",
+  t5: "Acqua di Giò Essenza/Armani|essenza; Armani Mania/Armani|mania; Diamonds for Men/Armani; Blue Jeans/Versace; Pour Homme Oud Noir/Versace|oud noir; Prada Amber pour Homme/Prada|amber pour homme; Aqva Amara/Bvlgari; Aqva Marine/Bvlgari; Tygar/Bvlgari; Arancia di Capri/ADP; Mirto di Panarea/ADP; Cipresso di Toscana/ADP; Torino21/Xerjoff|torino 21; F by Ferragamo/Ferragamo",
+  t6: "Pino Silvestre/Pino Silvestre"
+}},
+{ id: "france", q: "Name a men's fragrance from a French fashion or perfume house.", t: {
+  t1: "Sauvage/Dior; Bleu de Chanel/Chanel|bleu",
+  t2: "Y/YSL; Le Male/JPG; La Nuit de L'Homme/YSL|la nuit; Dior Homme/Dior; Allure Homme Sport/Chanel|allure sport; Terre d'Hermès/Hermès|terre; Baccarat Rouge 540/MFK|br540|baccarat rouge; Layton/PDM; 1 Million/Rabanne|one million|1m",
+  t3: "Sauvage Elixir/Dior; Fahrenheit/Dior; Dior Homme Intense/Dior; Égoïste/Chanel|egoist; Allure Homme/Chanel|allure; L'Homme/YSL; MYSLF/YSL|myself; Kouros/YSL; Ultra Male/JPG; Le Beau/JPG; Le Male Elixir/JPG; Gentleman/Givenchy; L'Homme Idéal/Guerlain; Chrome/Azzaro; Wanted/Azzaro; A*Men/Mugler|amen|angel men; Pegasus/PDM; Herod/PDM; Grand Soir/MFK; H24/Hermès; Invictus/Rabanne; Phantom/Rabanne",
+  t4: "Eau Sauvage/Dior; Dior Homme Sport/Dior; Platinum Égoïste/Chanel; Allure Homme Édition Blanche/Chanel|edition blanche; Antaeus/Chanel; Opium pour Homme/YSL; Rive Gauche pour Homme/YSL|rive gauche; Scandal pour Homme/JPG|scandal; Kokorico/JPG; Pi/Givenchy|π; Gentleman Réserve Privée/Givenchy|reserve privee; Habit Rouge/Guerlain; Vetiver/Guerlain; Héritage/Guerlain; Azzaro pour Homme/Azzaro; Wanted by Night/Azzaro; L.12.12 Blanc/Lacoste|l1212 blanc; Encre Noire/Lalique; Déclaration/Cartier; Pasha/Cartier; Kenzo pour Homme/Kenzo; Ombre Nomade/LV; L'Immensité/LV; Sur la Route/LV; Nouveau Monde/LV; Philosykos/Diptyque; Tam Dao/Diptyque; Greenley/PDM; Althaïr/PDM; Percival/PDM; Oud Satin Mood/MFK; Aqua Universalis/MFK; Voyage d'Hermès/Hermès|voyage; Un Jardin sur le Nil/Hermès|jardin sur le nil; Pure XS/Rabanne",
+  t5: "Pour Monsieur/Chanel; Sycomore/Chanel; Coromandel/Chanel; Jules/Dior; Dune pour Homme/Dior|dune; Higher/Dior; Bois d'Argent/Dior; Gris Dior/Dior; Jazz/YSL; M7/YSL; Pour Homme/YSL; Fleur du Mâle/JPG; Insensé/Givenchy; Monsieur de Givenchy/Givenchy; Spiritueuse Double Vanille/Guerlain|double vanille; Équipage/Hermès; Bel Ami/Hermès; Rocabar/Hermès; Eau d'Orange Verte/Hermès|orange verte; Pour un Homme/Caron; Eau de Rochas Homme/Rochas; Fougère Royale/Houbigant; Musc Ravageur/FM; Portrait of a Lady/FM; Géranium pour Monsieur/FM; Vetiver Extraordinaire/FM",
+  t6: "Jicky/Guerlain"
+}}
+];
+
+/* =========================================================
+   MATCHING
+   ========================================================= */
+function norm(s) {
+  return String(s).toLowerCase()
+    .replace(/π/g, " pi ").replace(/[²]/g, "2").replace(/\*/g, "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, " and ").replace(/['’`!.]/g, "")
+    .replace(/[^a-z0-9]+/g, " ").trim();
+}
+const squash = s => s.replace(/ /g, "");
+const STOP = new Set("pour homme l le la les de du d des eau for men man him uomo monsieur intense sport parfum the edition cologne toilette and of a in by".split(" "));
+const FLANKERS = new Set("elixir intense intensely sport absolu absolute extreme profumo profondo essenza flame cologne parfum tonic lucky victory aqua ocean black carbon spirit night blanche platinum noir eau fraiche givree".split(" "));
+function flankerLeft(e, sub, from) {
+  const left = e.tokens.filter((t, i) => i < from || i >= from + sub.length);
+  return left.some(t => FLANKERS.has(t) && !sub.includes(t));
+}
+function seqAt(tokens, sub) {
+  outer: for (let i = 0; i + sub.length <= tokens.length; i++) {
+    for (let j = 0; j < sub.length; j++) if (tokens[i + j] !== sub[j]) continue outer;
+    return i;
+  }
+  return -1;
+}
+const CONC = ["eau de parfum","eau de toilette","eau de cologne","extrait de parfum","edp","edt","parfum","extrait","cologne","toilette","perfume","spray"];
+
+const BRAND_ALIASES = [
+  ["yves saint laurent","ysl","saint laurent","yves st laurent","st laurent"],
+  ["jean paul gaultier","jpg","gaultier","jean paul","jean paul gautier","jp gaultier"],
+  ["dolce and gabbana","dg","d and g","dolce gabbana","dolce","dolce and gabanna"],
+  ["maison francis kurkdjian","mfk","kurkdjian","francis kurkdjian"],
+  ["parfums de marly","pdm","parfum de marly","marly"],
+  ["louis vuitton","lv","vuitton"],
+  ["viktor and rolf","vr","v and r","viktor rolf","victor and rolf","victor rolf"],
+  ["carolina herrera","ch","herrera"],
+  ["calvin klein","ck"],
+  ["ralph lauren","rl","polo ralph lauren"],
+  ["acqua di parma","adp"],
+  ["frederic malle","malle","editions de parfums frederic malle"],
+  ["tom ford","tf"],
+  ["rabanne","paco rabanne","paco"],
+  ["armani","giorgio armani","emporio armani"],
+  ["dior","christian dior"],
+  ["hugo boss","boss"],
+  ["bvlgari","bulgari"],
+  ["maison margiela","margiela","replica"],
+  ["kilian","by kilian","kilian paris"],
+  ["montblanc","mont blanc"],
+  ["issey miyake","issey","miyake"],
+  ["mugler","thierry mugler"],
+  ["ferragamo","salvatore ferragamo"],
+  ["initio","initio parfums prives"],
+  ["jo malone","jo malone london"]
+];
+
+// Build every brand phrase -> canonical brand
+const BRAND_MAP = new Map();
+function registerBrand(canon, alias) { if (alias && !BRAND_MAP.has(alias)) BRAND_MAP.set(alias, canon); }
+BRAND_ALIASES.forEach(list => list.forEach(a => registerBrand(list[0], a)));
+
+function parsePrompt(p) {
+  p.entries = [];
+  for (const tier of ORDER) {
+    const str = p.t[tier] || "";
+    for (const chunk of str.split(";")) {
+      const s = chunk.trim(); if (!s) continue;
+      const parts = s.split("|").map(x => x.trim());
+      const [name, code] = parts[0].split("/").map(x => x.trim());
+      const brand = code ? (B[code] || code) : "";
+      const nb = norm(brand);
+      if (nb) registerBrand(BRAND_MAP.get(nb) || nb, nb);
+      const e = { name, brand, tier, nn: norm(name), aliases: parts.slice(1).map(norm) };
+      p.entries.push(e);
+    }
+  }
+}
+PROMPTS.forEach(parsePrompt);
+// finalize entry brand canon + keys
+const BRAND_PHRASES = [...BRAND_MAP.keys()].sort((a, b) => b.length - a.length);
+for (const p of PROMPTS) for (const e of p.entries) {
+  const nb = norm(e.brand);
+  e.bc = BRAND_MAP.get(nb) || nb;
+  e.tokens = e.nn.split(" ");
+  e.keys = new Set([squash(e.nn), squash(e.bc + " " + e.nn), squash(nb + " " + e.nn), ...e.aliases.map(squash), ...e.aliases.map(a => squash(e.bc + " " + a))]);
+}
+
+function stripConc(s) {
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const c of CONC) if (s.endsWith(" " + c)) { s = s.slice(0, -c.length - 1).trim(); changed = true; }
+  }
+  return s;
+}
+function canonStart(s) {
+  for (const a of BRAND_PHRASES) {
+    if (s === a || s.startsWith(a + " ")) return BRAND_MAP.get(a) + s.slice(a.length);
+  }
+  return s;
+}
+function splitBrand(s) {
+  for (const a of BRAND_PHRASES) {
+    if (s === a) return { rest: "", brand: BRAND_MAP.get(a) };
+    if (s.startsWith(a + " ")) return { rest: s.slice(a.length + 1), brand: BRAND_MAP.get(a) };
+  }
+  for (const a of BRAND_PHRASES) {
+    if (a.length >= 3 && s.endsWith(" " + a)) return { rest: s.slice(0, -a.length - 1), brand: BRAND_MAP.get(a) };
+  }
+  return { rest: s, brand: null };
+}
+function hasSeq(tokens, sub) {
+  outer: for (let i = 0; i + sub.length <= tokens.length; i++) {
+    for (let j = 0; j < sub.length; j++) if (tokens[i + j] !== sub[j]) continue outer;
+    return true;
+  }
+  return false;
+}
+function lev(a, b) {
+  if (Math.abs(a.length - b.length) > 2) return 9;
+  let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const cur = [i];
+    for (let j = 1; j <= b.length; j++) cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+const uniqEntries = arr => [...new Set(arr)];
+
+// Returns { entry } or { err: "brand" | "needBrand" | "ambiguous" | "unknown" | "empty" }
+function judge(p, input) {
+  const raw = norm(input);
+  if (!raw) return { err: "empty" };
+  const forms = [...new Set([raw, stripConc(raw), canonStart(raw), stripConc(canonStart(raw))])].filter(Boolean);
+
+  // 1. Exact on full name, brand + name, or alias
+  for (const f of forms) {
+    if (f.split(" ").every(t => STOP.has(t))) continue;
+    const hits = p.entries.filter(e => e.keys.has(squash(f)));
+    if (hits.length === 1) return { entry: hits[0] };
+    if (hits.length > 1) return { err: "ambiguous" };
+  }
+
+  // 2. Brand split, then exact / partial on the rest
+  let brandOnly = false, needBrand = false, ambiguous = false;
+  for (const f of forms) {
+    const { rest: r0, brand } = splitBrand(f);
+    const rest = stripConc(r0);
+    if (!rest) { if (brand) brandOnly = true; continue; }
+    const rt = rest.split(" ");
+    const generic = rt.every(t => STOP.has(t));
+    const pool = brand ? p.entries.filter(e => e.bc === brand) : p.entries;
+    const usePool = pool.length ? pool : p.entries;
+
+    let hits = usePool.filter(e => squash(e.nn) === squash(rest) || e.aliases.some(a => squash(a) === squash(rest)));
+    if (generic && !brand && hits.length) { needBrand = true; continue; }
+    if (hits.length === 1) return { entry: hits[0] };
+    if (hits.length > 1) { ambiguous = true; continue; }
+
+    if (generic && !brand) { if (p.entries.some(e => hasSeq(e.tokens, rt))) needBrand = true; continue; }
+    if (squash(rest).length < 3) continue;
+    const part = usePool.filter(e => {
+      const at = seqAt(e.tokens, rt);
+      if (at >= 0) return !flankerLeft(e, rt, at);
+      return e.aliases.some(a => hasSeq(a.split(" "), rt));
+    });
+    if (part.length === 1) return { entry: part[0] };
+    if (part.length > 1) { ambiguous = true; continue; }
+  }
+
+  // 3. Typos: compare against full keys and against any run of words inside a name
+  const cands = new Map();
+  for (const f of forms) {
+    const { rest, brand } = splitBrand(f);
+    const rr = stripConc(rest);
+    if (!rr || rr.split(" ").every(t => STOP.has(t))) continue;
+    for (const s of [squash(f), squash(rr)]) {
+      if (s.length < 5) continue;
+      const limit = s.length >= 9 ? 2 : 1;
+      for (const e of p.entries) {
+        if (brand && e.bc !== brand && s !== squash(f)) continue;
+        let best = 9;
+        for (const k of e.keys) best = Math.min(best, lev(s, k));
+        for (let i = 0; i < e.tokens.length; i++) for (let j = i + 1; j <= e.tokens.length; j++) {
+          const run = e.tokens.slice(i, j);
+          if (run.every(t => STOP.has(t))) continue;
+          if (flankerLeft(e, run, i)) continue;
+          best = Math.min(best, lev(s, run.join("")));
+        }
+        if (best <= limit) cands.set(e, Math.min(cands.get(e) ?? 9, best));
+      }
+    }
+  }
+  if (cands.size) {
+    const min = Math.min(...cands.values());
+    let top = [...cands].filter(([, d]) => d === min).map(([e]) => e);
+    if (top.length > 1) {
+      const len = squash(stripConc(splitBrand(forms[0]).rest || forms[0])).length;
+      const gap = e => Math.abs(squash(e.nn).length - len);
+      const g = Math.min(...top.map(gap));
+      top = top.filter(e => gap(e) === g);
+    }
+    if (top.length === 1) return { entry: top[0] };
+    ambiguous = true;
+  }
+  if (ambiguous) return { err: "ambiguous" };
+  if (needBrand) return { err: "needBrand" };
+  if (brandOnly) return { err: "brand" };
+  return { err: "unknown" };
+}
+
+const ERRORS = {
+  unknown: ["Not on the list. Try another.", "No luck with that one. Keep going.", "That one doesn't count here. Try again."],
+  ambiguous: ["A few colognes match that. Add a word or two."],
+  needBrand: ["Add the brand so we know which one you mean."],
+  brand: ["That's a brand. Name one of its fragrances."],
+  empty: ["Type a cologne first."]
+};
+
+/* =========================================================
+   DAILY + STORAGE
+   ========================================================= */
+function todayKey() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
+function dayNumber() { const s = new Date(2026, 10, 6); const n = new Date(); n.setHours(0, 0, 0, 0); return Math.round((n - s) / 864e5) + 1; }
+function seeded(seed) {
+  let h = 2166136261;
+  for (const ch of seed) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 1e6) / 1e6; };
+}
+function pickSeven(rand) {
+  const a = PROMPTS.slice();
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a.slice(0, 7);
+}
+const store = {
+  get(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+
+/* =========================================================
+   SCENERY
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const L = km => { const k = Math.max(0, Math.min(MAX_KM, km)); return 0.5 * Math.log10(1 + k) / Math.log10(1 + MAX_KM) + 0.5 * Math.sqrt(k / MAX_KM); };
+const MILESTONES = [
+  { km: 0, name: "The park" }, { km: 2, name: "Cloud deck" }, { km: 11, name: "Airliners" },
+  { km: 35, name: "Weather balloons" }, { km: 100, name: "Edge of space" }, { km: 408, name: "Space station" }, { km: 700, name: "Perfect climb" }
+];
+const SKY = [
+  { f: 0.00, top: [120,186,240], bot: [255,214,170] },
+  { f: 0.20, top: [96,165,230],  bot: [190,225,250] },
+  { f: 0.40, top: [50,110,200],  bot: [130,185,240] },
+  { f: 0.60, top: [20,50,130],   bot: [60,110,195] },
+  { f: 0.78, top: [8,16,52],     bot: [24,46,110] },
+  { f: 0.92, top: [3,5,20],      bot: [12,22,60] },
+  { f: 1.00, top: [1,2,10],      bot: [8,14,40] }
+];
+const mix = (a, b, t) => a.map((v, i) => Math.round(v + (b[i] - v) * t));
+function skyAt(f) {
+  for (let i = 0; i < SKY.length - 1; i++) {
+    const a = SKY[i], b = SKY[i + 1];
+    if (f <= b.f) { const t = (f - a.f) / (b.f - a.f || 1); return [mix(a.top, b.top, t), mix(a.bot, b.bot, t)]; }
+  }
+  return [SKY[SKY.length - 1].top, SKY[SKY.length - 1].bot];
+}
+const rgb = c => `rgb(${c[0]},${c[1]},${c[2]})`;
+
+// Bands: [layer id, from km, to km, parallax]
+const BANDS = [
+  ["birds", 0, 4, 70], ["clouds", 0.6, 22, 80], ["plane", 6, 32, 70], ["balloon", 20, 90, 70],
+  ["earth", 70, 99999, 10], ["sat", 220, 99999, 20], ["moon", 260, 99999, 8],
+  ["stars1", 60, 99999, 0], ["stars2", 80, 99999, 0]
+];
+
+(function buildScene() {
+  // Birds
+  const birds = $("birds");
+  const flock = [[14, 0, 18, 1], [19, -6, 18, 0.8], [22, -3, 18, 0.9], [30, -11, 24, 1.1], [36, -15, 24, 0.85], [10, -9, 26, 0.7], [44, -4, 21, 0.95, true], [48, -13, 27, 0.75, true]];
+  for (const [top, delay, dur, scale, rev] of flock) {
+    const b = document.createElement("div");
+    b.className = "bird" + (rev ? " rev" : "");
+    b.style.cssText = `top:${top}vh;animation-duration:${dur}s;animation-delay:${delay}s`;
+    const w = Math.round(34 * scale);
+    b.innerHTML = `<svg width="${w}" height="${Math.round(w / 2)}" viewBox="0 0 40 20" style="animation-delay:${(delay % 1).toFixed(2)}s"><path d="M2 9 Q11 1 20 10 Q29 1 38 9" fill="none" stroke="#2d3b55" stroke-width="2.6" stroke-linecap="round"/></svg>`;
+    birds.appendChild(b);
+  }
+  // Clouds
+  const clouds = $("clouds");
+  const cl = [[6, 12, 220, 70], [58, 8, 300, 90], [30, 34, 260, 80], [72, 44, 340, 110], [-4, 58, 280, 90], [44, 70, 320, 100], [80, 20, 200, 60]];
+  cl.forEach(([x, y, w, dur], i) => {
+    const c = document.createElement("div");
+    c.className = "cloud";
+    c.style.cssText = `left:${x}vw;top:${y}vh;animation-duration:${dur}s;animation-delay:-${i * 7}s`;
+    c.innerHTML = `<svg width="${w}" height="${w * 0.42}" viewBox="0 0 200 84"><g fill="#fff" opacity=".92"><ellipse cx="60" cy="56" rx="50" ry="26"/><ellipse cx="100" cy="40" rx="44" ry="36"/><ellipse cx="146" cy="56" rx="46" ry="24"/><rect x="20" y="56" width="166" height="26" rx="13"/></g><ellipse cx="100" cy="74" rx="80" ry="8" fill="#c9dcf2" opacity=".5"/></svg>`;
+    clouds.appendChild(c);
+  });
+  // Park items: trees, bench, lamp, fountain
+  const items = $("park-items");
+  const tree = (x, y, s, cls, tone) => `<div class="park-item tree ${cls}" style="left:${x}%;bottom:calc(100% - ${y}vh);width:${70 * s}px;height:${110 * s}px;margin-left:-${35 * s}px"><svg viewBox="0 0 70 110" width="100%" height="100%"><rect x="31" y="62" width="8" height="48" rx="3" fill="#7a5233"/><circle cx="35" cy="44" r="27" fill="${tone}"/><circle cx="18" cy="56" r="17" fill="${tone}"/><circle cx="52" cy="56" r="17" fill="${tone}"/><circle cx="28" cy="34" r="10" fill="#fff" opacity=".12"/></svg></div>`;
+  items.innerHTML =
+    tree(6, 3.2, 1.1, "", "#4f9a45") + tree(14, 2.4, 0.8, "b", "#5ba851") + tree(27, 2.9, 0.95, "", "#468f3e") +
+    tree(70, 2.2, 0.85, "b", "#55a24b") + tree(90, 3.4, 1.15, "", "#4a9441") + tree(97, 2.6, 0.75, "b", "#5aa64f") +
+    tree(38, 10, 1.4, "b", "#3f863a") + tree(84, 12, 1.6, "", "#3c8037") +
+    `<div class="park-item" style="left:calc(50% + 46px);bottom:calc(100% - 5.6vh);width:74px;height:40px"><svg viewBox="0 0 74 40" width="74" height="40"><rect x="4" y="6" width="66" height="6" rx="2" fill="#9a6a3f"/><rect x="4" y="15" width="66" height="6" rx="2" fill="#9a6a3f"/><rect x="2" y="23" width="70" height="5" rx="2" fill="#8a5c35"/><rect x="8" y="28" width="4" height="12" fill="#3b3b44"/><rect x="62" y="28" width="4" height="12" fill="#3b3b44"/></svg></div>` +
+    `<div class="park-item" style="left:calc(50% - 110px);bottom:calc(100% - 6vh);width:22px;height:96px"><svg viewBox="0 0 22 96" width="22" height="96"><rect x="9" y="16" width="4" height="80" fill="#2f3446"/><path d="M3 16 L19 16 L16 4 L6 4z" fill="#2f3446"/><circle cx="11" cy="11" r="4" fill="#FFE9A8"/></svg></div>` +
+    `<div class="park-item" style="left:20%;bottom:calc(100% - 13vh);width:70px;height:56px"><svg viewBox="0 0 70 56" width="70" height="56"><ellipse cx="35" cy="48" rx="33" ry="8" fill="#b9c3cc"/><ellipse cx="35" cy="46" rx="27" ry="5" fill="#7fc6ea"/><rect x="31" y="20" width="8" height="26" fill="#c9d1d8"/><g class="fountain-drop"><path d="M35 22 Q25 6 18 22 M35 22 Q45 6 52 22 M35 22 L35 2" stroke="#bfe6ff" stroke-width="2.5" fill="none" stroke-linecap="round"/></g></svg></div>`;
+  // Rail marks
+  const rail = $("rail");
+  for (const m of MILESTONES) {
+    const el = document.createElement("div");
+    el.className = "mark";
+    el.style.bottom = (L(m.km) * 100) + "%";
+    el.innerHTML = `<b>${m.km} km</b>${m.name}`;
+    rail.appendChild(el);
+  }
+})();
+
+function zoneFor(km) {
+  if (km >= 700) return "Perfect climb";
+  let z = "In the park";
+  for (const m of MILESTONES.slice(1)) if (km >= m.km) z = "Past the " + m.name.toLowerCase().replace("the ", "");
+  if (km > 0 && km < 2) z = "Above the treetops";
+  return z;
+}
+
+function paint(km) {
+  const f = L(km);
+  const [top, bot] = skyAt(f);
+  const sky = $("sky");
+  sky.style.setProperty("--top", rgb(top));
+  sky.style.setProperty("--bottom", rgb(bot));
+  for (const [id, lo, hi, par] of BANDS) {
+    const el = $(id);
+    const a = L(lo), b = hi > MAX_KM ? 1.15 : L(hi);
+    const t = (f - a) / ((b - a) || 1);
+    let op = 0;
+    if (t > -0.25 && t < 1.25) op = t < 0 ? 1 + t / 0.25 : t > 1 ? 1 - (t - 1) / 0.25 : 1;
+    if (id === "birds" && km <= 0.01) op = 1;
+    el.style.opacity = Math.max(0, Math.min(1, op)).toFixed(3);
+    el.style.transform = `translateY(${((t - 0.5) * par).toFixed(2)}vh)`;
+  }
+  const sink = Math.min(1, f / 0.13);
+  $("park").style.transform = `translateY(${(sink * 52).toFixed(2)}vh)`;
+  $("park").style.opacity = (1 - Math.max(0, (sink - 0.8) / 0.2)).toFixed(3);
+  $("rail-dot").style.bottom = (f * 100) + "%";
+  $("alt").textContent = Math.round(km);
+  $("zone").textContent = zoneFor(km);
+  document.querySelector('meta[name="theme-color"]').content = rgb(top);
+}
+
+let shown = 0, raf = null;
+function climbTo(target, dur = 1700) {
+  cancelAnimationFrame(raf);
+  const craft = $("craft");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { shown = target; paint(target); return; }
+  const from = shown, start = performance.now();
+  if (target > from) craft.classList.add("boost");
+  const step = now => {
+    const t = Math.min(1, (now - start) / dur);
+    const e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    shown = from + (target - from) * e;
+    paint(shown);
+    if (t < 1) raf = requestAnimationFrame(step);
+    else craft.classList.remove("boost");
+  };
+  raf = requestAnimationFrame(step);
+}
+
+let launchTimers = [];
+(function buildSpray() {
+  const sp = $("spray");
+  for (let i = 0; i < 18; i++) {
+    const d = document.createElement("span");
+    d.className = "drop";
+    d.style.setProperty("--sx", (Math.random() * 70 - 35).toFixed(0) + "px");
+    d.style.setProperty("--sy", (-90 - Math.random() * 80).toFixed(0) + "px");
+    d.style.setProperty("--ss", (2 + Math.random() * 2.5).toFixed(2));
+    d.style.animationDelay = (-Math.random() * 0.5).toFixed(2) + "s";
+    sp.appendChild(d);
+  }
+})();
+function launch(target) {
+  const c = $("craft");
+  launchTimers.forEach(clearTimeout);
+  launchTimers = [];
+  c.classList.remove("tilted", "upright", "spraying");
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setFlying(true); climbTo(target); return; }
+  const at = (ms, fn) => launchTimers.push(setTimeout(fn, ms));
+  c.classList.add("tilted");                                   // turn sideways
+  at(320, () => c.classList.add("spraying"));                  // spray burst
+  at(800, () => { setFlying(true); climbTo(target, 1900); });  // boost upward
+  at(1500, () => c.classList.add("upright"));
+  at(1550, () => c.classList.remove("tilted"));                // right itself
+  at(1900, () => c.classList.remove("spraying"));
+  at(2400, () => c.classList.remove("upright"));
+}
+function setFlying(on) { $("craft").classList.toggle("flying", on); }
+
+function pop(tierKey, gained) {
+  const T = TIERS[tierKey];
+  const el = $("pop");
+  el.className = "";
+  el.innerHTML = `<div class="tier">${T.icon} ${T.name}</div>${gained ? `<div class="gain">+${gained} km</div>` : ""}`;
+  if (tierKey === "t6" || tierKey === "t5") {
+    const n = tierKey === "t6" ? 26 : 12;
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("span");
+      s.className = "spark";
+      const ang = (i / n) * Math.PI * 2, r = 90 + Math.random() * 90;
+      s.style.setProperty("--x", Math.cos(ang) * r + "px");
+      s.style.setProperty("--y", Math.sin(ang) * r + "px");
+      if (tierKey === "t6" && i % 2) s.style.background = "#fff";
+      el.appendChild(s);
+    }
+  }
+  void el.offsetWidth;
+  el.className = "show";
+}
+
+
+/* Decorative bottles beside the intro text */
+(function buildDeco() {
+  const glass = 'fill="rgba(225,240,255,0.28)" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"';
+  const shine = '<rect x="SX" y="SY" width="4" height="SH" rx="2" fill="#fff" opacity=".5"/>';
+  const shapes = {
+    tall: (c, k) => `<svg width="54" height="112" viewBox="0 0 54 112"><rect x="17" y="2" width="20" height="16" rx="2" fill="${k}"/><rect x="21" y="17" width="12" height="6" fill="#cdb98a"/><rect x="5" y="22" width="44" height="88" rx="6" ${glass}/><rect x="9" y="50" width="36" height="56" rx="4" fill="${c}"/>${shine.replace("SX","10").replace("SY","27").replace("SH","70")}</svg>`,
+    round: (c, k) => `<svg width="86" height="104" viewBox="0 0 86 104"><circle cx="43" cy="18" r="11" fill="${k}"/><rect x="36" y="27" width="14" height="10" fill="#cdb98a"/><circle cx="43" cy="68" r="34" ${glass}/><path d="M13 76 A30 30 0 0 0 73 76 A34 12 0 0 1 13 76z" fill="${c}"/><circle cx="43" cy="80" r="26" fill="${c}" opacity=".85"/>${shine.replace("SX","20").replace("SY","48").replace("SH","30")}</svg>`,
+    square: (c, k) => `<svg width="84" height="100" viewBox="0 0 84 100"><rect x="24" y="2" width="36" height="24" rx="4" fill="${k}"/><rect x="34" y="25" width="16" height="6" fill="#cdb98a"/><rect x="6" y="30" width="72" height="68" rx="8" ${glass}/><rect x="11" y="46" width="62" height="48" rx="5" fill="${c}"/>${shine.replace("SX","13").replace("SY","35").replace("SH","54")}</svg>`,
+    facet: (c, k) => `<svg width="70" height="108" viewBox="0 0 70 108"><path d="M27 2 L43 2 L46 18 L24 18z" fill="${k}"/><rect x="29" y="18" width="12" height="6" fill="#cdb98a"/><path d="M18 24 L52 24 L66 42 L66 92 L52 106 L18 106 L4 92 L4 42z" ${glass}/><path d="M8 58 L62 58 L62 90 L50 102 L20 102 L8 90z" fill="${c}"/>${shine.replace("SX","11").replace("SY","42").replace("SH","44")}</svg>`,
+    flask: (c, k) => `<svg width="60" height="110" viewBox="0 0 60 110"><rect x="22" y="2" width="16" height="22" rx="8" fill="${k}"/><rect x="25" y="23" width="10" height="8" fill="#cdb98a"/><ellipse cx="30" cy="70" rx="26" ry="38" ${glass}/><ellipse cx="30" cy="80" rx="21" ry="25" fill="${c}"/>${shine.replace("SX","12").replace("SY","48").replace("SH","40")}</svg>`
+  };
+  const amber = "rgba(240,170,70,0.9)", blue = "rgba(70,130,215,0.9)", green = "rgba(90,170,120,0.88)",
+        rose = "rgba(230,130,150,0.88)", smoke = "rgba(70,70,95,0.92)", gold = "#E2BA5A", black = "#2b2b36", silver = "#c9ced8";
+  const left = [
+    ["square", blue, silver, 22, -4, -8],
+    ["tall", amber, gold, 54, 24, 6],
+    ["round", rose, gold, 4, 48, -5],
+    ["facet", green, black, 46, 74, 8]
+  ];
+  const right = [
+    ["flask", amber, black, 18, -6, 7],
+    ["facet", smoke, gold, 52, 20, -6],
+    ["square", green, gold, 10, 46, 5],
+    ["tall", blue, silver, 60, 72, -8]
+  ];
+  const place = (box, list, side) => {
+    box.innerHTML = list.map(([shape, c, k, x, y, rot], i) =>
+      shapes[shape](c, k).replace("<svg ", `<svg style="${side}:${x}px;top:${y}%;transform:rotate(${rot}deg);animation-delay:-${i * 1.4}s" `)).join("");
+  };
+  place($("deco-left"), left, "left");
+  place($("deco-right"), right, "right");
+})();
+
+/* =========================================================
+   GAME
+   ========================================================= */
+let mode = "daily", round = [], idx = 0, results = [], total = 0, timer = null, deadline = 0, locked = false;
+
+function show(id) { for (const s of ["s-intro", "s-play", "s-end"]) $(s).hidden = s !== id; sizePanel(); }
+let groundH = 0;
+function sizePanel(resetGround) {
+  requestAnimationFrame(() => {
+    const ph = $("panel").offsetHeight, vh = window.innerHeight;
+    const root = document.documentElement.style;
+    root.setProperty("--ph", ph + "px");
+    if (!groundH || resetGround) { groundH = Math.max(vh * 0.46, ph + vh * 0.16); root.setProperty("--gh", groundH + "px"); }
+    $("craft").style.bottom = Math.max(groundH * 0.89, ph + 26) + "px";
+  });
+}
+window.addEventListener("resize", () => sizePanel(true));
+
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+function buildChips() {
+  $("chips").innerHTML = ORDER.map(k => `<li><b>${TIERS[k].icon} ${TIERS[k].name}</b><span>+${TIERS[k].pts}</span></li>`).join("");
+}
+
+function start(m) {
+  mode = m;
+  round = m === "daily" ? pickSeven(seeded(todayKey())) : pickSeven(Math.random);
+  idx = 0; results = []; total = 0;
+  climbTo(0, 600);
+  setFlying(false);
+  show("s-play");
+  ask();
+}
+
+function renderPips() {
+  $("pips").innerHTML = round.map((_, i) => {
+    const r = results[i];
+    const cls = r ? "done" + (r.tier === "miss" ? " miss" : "") : i === idx ? "now" : "";
+    return `<div class="pip ${cls}"></div>`;
+  }).join("");
+}
+
+function ask() {
+  locked = false;
+  const p = round[idx];
+  $("prompt").textContent = p.q;
+  $("ask").hidden = false;
+  $("reveal").hidden = true;
+  $("answer").value = "";
+  $("answer").disabled = false;
+  setMsg("");
+  renderPips();
+  sizePanel();
+  $("answer").focus();
+  runTimer();
+}
+
+function runTimer() {
+  clearInterval(timer);
+  deadline = Date.now() + SECONDS * 1000;
+  const tick = () => {
+    const left = Math.max(0, deadline - Date.now());
+    $("bar").style.width = (left / (SECONDS * 10)) + "%";
+    const secs = Math.ceil(left / 1000);
+    $("secs").textContent = secs;
+    const low = left < 5000;
+    $("secs").classList.toggle("low", low);
+    $("timer").classList.toggle("low", low);
+    if (left <= 0) { clearInterval(timer); settle(null); }
+  };
+  tick();
+  timer = setInterval(tick, 100);
+}
+
+function setMsg(text, bad) { const m = $("msg"); m.textContent = text; m.classList.toggle("bad", !!bad); }
+
+function shake() { const p = $("panel"); p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake"); }
+
+function tryAnswer() {
+  if (locked) return;
+  const input = $("answer").value;
+  const res = judge(round[idx], input);
+  if (res.entry) { settle(res.entry, input); return; }
+  const list = ERRORS[res.err] || ERRORS.unknown;
+  setMsg(list[Math.floor(Math.random() * list.length)], true);
+  shake();
+  $("answer").select();
+}
+
+function settle(entry, typed) {
+  if (locked) return;
+  locked = true;
+  clearInterval(timer);
+  const p = round[idx];
+  const tier = entry ? entry.tier : "miss";
+  const T = TIERS[tier];
+  total += T.pts;
+  results.push({ q: p.q, name: entry ? entry.name : null, tier });
+
+  $("ask").hidden = true;
+  $("answer").disabled = true;
+  const v = $("verdict");
+  v.textContent = `${T.icon} ${T.name}${T.pts ? `, +${T.pts} km` : ""}`;
+  v.classList.toggle("miss", tier === "miss");
+
+  $("detail").innerHTML = entry
+    ? `<strong>${esc(entry.name)}</strong>${entry.brand ? ` by ${esc(entry.brand)}` : ""}. ${T.line}`
+    : `${T.line} You stay where you are.`;
+
+
+
+  $("b-next").textContent = idx === round.length - 1 ? "See my altitude" : "Next prompt";
+  $("reveal").hidden = false;
+  renderPips();
+  sizePanel();
+  pop(tier, T.pts);
+  if (T.pts) launch(total);
+  setTimeout(() => $("b-next").focus(), 50);
+}
+
+function next() { idx++; if (idx < round.length) ask(); else finish(); }
+
+const RATINGS = [
+  { min: 600, stars: 5, comment: "A legendary nose. Almost nobody climbs this high." },
+  { min: 450, stars: 4, comment: "Seriously impressive. You know the deep cuts." },
+  { min: 300, stars: 3, comment: "A strong climb with some real collector picks." },
+  { min: 150, stars: 2, comment: "Solid. Reach for rarer bottles to fly higher." },
+  { min: 0,   stars: 1, comment: "You stayed close to the park. Skip the obvious picks next time." }
+];
+const ratingFor = km => RATINGS.find(r => km >= r.min);
+function rankFor(km) {
+  if (km >= 600) return "Cosmic Nose";
+  if (km >= 450) return "Orbiter";
+  if (km >= 300) return "Stratonaut";
+  if (km >= 150) return "Jet Setter";
+  if (km >= 50) return "Cloud Hopper";
+  return "Park Bench Regular";
+}
+
+function finish() {
+  if (mode === "daily") store.set("sillage-" + todayKey(), { results, total });
+  renderEnd();
+}
+
+function renderEnd() {
+  show("s-end");
+  const rt = ratingFor(total);
+  $("stars").innerHTML = "★".repeat(rt.stars) + `<span class="off">${"★".repeat(5 - rt.stars)}</span>`;
+  $("stars").setAttribute("aria-label", `${rt.stars} out of 5 stars`);
+  $("comment").textContent = `${rt.comment} You reached ${Math.round(total / MAX_KM * 100)}% of a perfect climb.`;
+  $("end-km").textContent = total;
+  $("rank").textContent = rankFor(total) + (mode === "daily" ? `, Sillage #${dayNumber()}` : ", free climb");
+  $("emojis").textContent = results.map(r => TIERS[r.tier].icon).join(" ");
+  $("recap").innerHTML = results.map(r => {
+    const T = TIERS[r.tier];
+    return `<li><span>${T.icon}</span><span>${esc(r.name || "No answer")}<br><span class="q">${esc(r.q)}</span></span><span class="pts">+${T.pts}</span></li>`;
+  }).join("");
+  $("end-note").textContent = "A new climb opens at midnight.";
+  setFlying(total > 0);
+  if (Math.round(shown) !== total) climbTo(total);
+  sizePanel();
+}
+
+function shareText() {
+  const label = mode === "daily" ? `Sillage #${dayNumber()}` : "Sillage free climb";
+  return `${label}\n${"★".repeat(ratingFor(total).stars)}${"☆".repeat(5 - ratingFor(total).stars)}\n${results.map(r => TIERS[r.tier].icon).join("")}\n${total} km, ${rankFor(total)}\n${location.href.split("#")[0]}`;
+}
+
+/* Wiring */
+$("form").addEventListener("submit", e => { e.preventDefault(); tryAnswer(); });
+$("answer").addEventListener("input", () => setMsg(""));
+$("b-pass").addEventListener("click", () => settle(null));
+$("b-next").addEventListener("click", next);
+$("b-daily").addEventListener("click", () => {
+  const saved = store.get("sillage-" + todayKey());
+  if (saved) { mode = "daily"; results = saved.results; total = saved.total; renderEnd(); }
+  else start("daily");
+});
+$("b-share").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText(shareText()); $("end-note").textContent = "Copied. Paste it anywhere to share."; }
+  catch (e) { $("end-note").textContent = shareText(); }
+});
+
+$("daylabel").textContent = `Daily climb #${dayNumber()}`;
+paint(0);
+sizePanel();
+if (store.get("sillage-" + todayKey())) {
+  $("b-daily").textContent = "See today's result";
+  $("intro-note").textContent = "You've finished today's climb. Come back tomorrow for a new one.";
+}
+</script>
+</body>
+</html>
